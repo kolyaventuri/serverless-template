@@ -7,14 +7,14 @@ package:
 provider:
   name: aws
   runtime: nodejs18.x
-  region: us-west-2
+  region: ${env:AWS_REGION}
   profile: "${env:AWS_PROFILE}"
   role: "arn:aws:iam::${env:AWS_ID}:role/${env:AWS_ROLE}-${self:provider.stage}"
   stage: ${opt:stage, 'dev'}
   logRetentionInDays: ${self:custom.logs.retention.${self:provider.stage}, 7}
   environment:
-    ENV: ${self:provider.stage}
-    REGION: ${self:provider.region}
+    ENV: ${sls:stage}
+    REGION: ${env:AWS_REGION}
     SERVICE_NAME: ${self:service}-${self:provider.stage}
 
 custom:
