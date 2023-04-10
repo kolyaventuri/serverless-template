@@ -1,0 +1,55 @@
+service: serverless-template
+useDotenv: true
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-west-2
+  profile: "${env:AWS_PROFILE}"
+  role: "arn:aws:iam::${env:AWS_ID}:role/${env:AWS_ROLE}-${self:provider.stage}"
+  stage: ${opt:stage, 'dev'}
+  logRetentionInDays: ${self:custom.logs.retention.${self:provider.stage}, 7}
+  environment:
+    ENV: ${self:provider.stage}
+    REGION: ${self:provider.region}
+    SERVICE_NAME: ${self:service}-${self:provider.stage}
+
+custom:
+  logs:
+    retention:
+      production: 14
+      dev: 7
+  webpack:
+    webpackConfig: ./webpack.config.js
+    packager: 'npm'
+    includeModules:
+      forceExclude:
+        - dotenv 
+  warmup:
+    enabled: true
+    events:
+      - schedule: rate(5 minutes)
+    prewarm: true
+    concurrency: 1
+  prune:
+    automatic: true
+    number: 5
+
+functions:
+  healthcheck:
+    handler: src/healthcheck/get.handler
+    description: Basic page ok healthcheck
+    events:
+      - http:
+          path: healthcheck
+          method: get
+    
+plugins:
+  - serverless-webpack
+  - serverless-plugin-warmup
+  - serverless-dotenv-plugin
+  - serverless-prune-plugin
+  - serverless-offline

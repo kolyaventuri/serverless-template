@@ -4,10 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "deploy:env": "sls deploy --stage $NODE_ENV",
+    "deploy": "sls deploy --stage dev",
+    "deploy:production": "sls deploy --stage production",
+    "deploy:stage": "sls deploy --stage stage",
+    "serve": "sls offline --httpPort 3000 --stage local --noPrependStageInUrl --noAuth",
+    "serve:watch": "nodemon -e js,ts,jsx,tsx,yml -x npm run serve",
     "test": "npm-run-all lint:* test:*",
     "test:unit": "vitest --run",
     "lint:tsc": "tsc --noEmit",
     "lint:lint": "xo --fix",
+    "build": "sls webpack",
     "postinstall": "husky install"
   },
   "keywords": [],
@@ -24,14 +31,27 @@
     ]
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.114",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
+    "dotenv": "^16.0.3",
     "eslint-config-xo-typescript": "^0.57.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.1",
+    "nodemon": "^2.0.22",
     "npm-run-all": "^4.1.5",
+    "serverless": "^3.30.1",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-offline": "^12.0.4",
+    "serverless-plugin-warmup": "^8.2.1",
+    "serverless-prune-plugin": "^2.0.2",
+    "serverless-webpack": "^5.11.0",
     "typescript": "^5.0.4",
+    "vite": "^4.2.1",
+    "vite-tsconfig-paths": "^4.0.8",
     "vitest": "^0.29.8",
+    "webpack": "^5.78.0",
+    "webpack-node-externals": "^3.0.0",
     "xo": "^0.54.0"
   }
 }
